@@ -1,0 +1,555 @@
+/* A bounded, native-scroll journey. The rest of the website remains ordinary document flow. */
+:root {
+  --header-height: 108px;
+}
+.world-experience {
+  position: relative;
+  margin: 0 22px;
+  background: var(--mist);
+  border-radius: 6px;
+}
+.world-stage {
+  position: relative;
+  height: calc(100svh - var(--header-height));
+  min-height: 570px;
+  overflow: clip;
+  isolation: isolate;
+  border-radius: 6px;
+  background: var(--mist);
+}
+.world-experience.world-enhanced {
+  height: 320svh;
+}
+.world-enhanced .world-stage {
+  position: sticky;
+  top: var(--header-height);
+}
+.world-experience.world-static {
+  height: auto;
+}
+.world-static .world-stage {
+  position: relative;
+  top: auto;
+}
+.world-canvas {
+  position: absolute;
+  width: 73%;
+  height: 94%;
+  right: -1%;
+  top: -1%;
+  z-index: -1;
+  mask-image: linear-gradient(90deg, transparent, #000 13%);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 13%);
+}
+.world-canvas canvas,
+.world-poster {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+}
+.world-canvas canvas {
+  pointer-events: none;
+}
+.world-poster {
+  object-fit: contain;
+  opacity: 1;
+}
+.world-ready .world-poster {
+  opacity: 0;
+  pointer-events: none;
+}
+.world-experience:not(.world-ready) .world-scroll-hint {
+  visibility: hidden;
+}
+.world-chapters {
+  position: absolute;
+  left: calc(var(--gutter) - 22px);
+  top: 48%;
+  transform: translateY(-50%);
+  width: 36%;
+  max-width: 480px;
+}
+.world-chapter-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10px;
+  color: #526b58;
+  margin-bottom: 27px;
+}
+.world-chapter-note::before {
+  content: '';
+  height: 5px;
+  width: 5px;
+  background: #879a78;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.world-copy h1 {
+  font-size: clamp(62px, 6.3vw, 98px);
+  line-height: 0.97;
+  letter-spacing: -3.3px;
+}
+.world-copy h2 {
+  font-size: clamp(49px, 4.8vw, 75px);
+  line-height: 1.02;
+  letter-spacing: -2px;
+  max-width: 450px;
+}
+.world-description {
+  font-size: 12px;
+  line-height: 1.95;
+  color: #526559;
+  max-width: 295px;
+  margin-top: 26px;
+}
+.world-actions {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.world-actions .button {
+  min-height: 50px;
+  font-size: 11px;
+  padding-inline: 23px;
+}
+.world-actions .text-link {
+  font-size: 11px;
+}
+.world-bottom {
+  position: absolute;
+  left: calc(var(--gutter) - 22px);
+  right: calc(var(--gutter) - 22px);
+  bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #b7c9b76e;
+}
+.world-scroll-hint {
+  color: #536b58;
+  font-size: 10px;
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  min-width: 145px;
+}
+.world-scroll-mark {
+  width: 18px;
+  height: 28px;
+  border: 1px solid #96aa92;
+  border-radius: 12px;
+  position: relative;
+}
+.world-scroll-mark::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  width: 2px;
+  height: 6px;
+  border-radius: 2px;
+  background: #607957;
+}
+.world-route {
+  display: none;
+  gap: 4px;
+  align-items: center;
+}
+.world-ready .world-route {
+  display: flex;
+}
+.world-route button {
+  background: transparent;
+  color: #5b715e;
+  font-size: 10px;
+  padding: 9px 13px;
+  border-radius: 25px;
+  min-height: 35px;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  white-space: nowrap;
+}
+.world-route button:hover {
+  background: #cfdccf;
+}
+.world-route button[aria-current='step'] {
+  background: var(--forest);
+  color: var(--white);
+}
+.world-skip {
+  color: #536b58;
+  font-size: 10px;
+  border-bottom: 1px solid #a3b6a0;
+  padding-block: 4px;
+  white-space: nowrap;
+}
+.world-skip span {
+  margin-left: 13px;
+}
+.world-skip:hover {
+  border-color: var(--forest);
+}
+.world-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #c8d8c7;
+}
+#world-progress {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #869b72;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.world-illustration-note {
+  position: absolute;
+  right: 25px;
+  bottom: 101px;
+  color: #5c745e;
+  font-size: 9px;
+  letter-spacing: 0.1px;
+}
+.world-static .world-scroll-mark {
+  display: none;
+}
+.world-static .world-scroll-hint {
+  font-size: 0;
+}
+.world-static .world-scroll-hint::after {
+  content: 'Explore at your own pace';
+  font-size: 10px;
+}
+@media (min-width: 1700px) {
+  :root {
+    --header-height: 120px;
+  }
+  .world-copy h1 {
+    font-size: 110px;
+  }
+  .world-chapters {
+    width: 35%;
+    max-width: 540px;
+  }
+  .world-description {
+    font-size: 14px;
+    max-width: 330px;
+  }
+}
+@media (max-width: 1150px) {
+  .world-copy h1 {
+    font-size: clamp(59px, 6.5vw, 75px);
+  }
+  .world-copy h2 {
+    font-size: 57px;
+  }
+  .world-canvas {
+    width: 74%;
+    right: -3%;
+  }
+  .world-actions {
+    gap: 18px;
+  }
+  .world-actions .button {
+    padding-inline: 19px;
+  }
+  .world-actions .text-link {
+    font-size: 10px;
+  }
+  .world-route button {
+    padding-inline: 10px;
+    font-size: 9px;
+  }
+  .world-scroll-hint {
+    min-width: 120px;
+    font-size: 9px;
+    gap: 8px;
+  }
+  .world-skip {
+    font-size: 9px;
+  }
+}
+@media (max-width: 900px) {
+  :root {
+    --header-height: 88px;
+  }
+  .world-experience {
+    margin-inline: 16px;
+  }
+  .world-chapters {
+    left: calc(var(--gutter) - 16px);
+    width: 40%;
+  }
+  .world-copy h1 {
+    font-size: clamp(52px, 7.2vw, 68px);
+    letter-spacing: -2.6px;
+  }
+  .world-copy h2 {
+    font-size: 49px;
+    letter-spacing: -1.5px;
+  }
+  .world-chapter-note {
+    font-size: 9px;
+    max-width: 220px;
+    line-height: 1.7;
+  }
+  .world-description {
+    font-size: 11px;
+    max-width: 235px;
+  }
+  .world-canvas {
+    width: 72%;
+    right: -5%;
+  }
+  .world-actions {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .world-actions .button {
+    font-size: 10px;
+    min-height: 46px;
+    padding-inline: 17px;
+  }
+  .world-bottom {
+    left: calc(var(--gutter) - 16px);
+    right: calc(var(--gutter) - 16px);
+    gap: 10px;
+  }
+  .world-scroll-hint {
+    min-width: 0;
+    font-size: 8px;
+  }
+  .world-route button {
+    padding-inline: 8px;
+    font-size: 8px;
+  }
+  .world-skip {
+    font-size: 8px;
+  }
+  .world-skip span {
+    margin-left: 6px;
+  }
+  .world-illustration-note {
+    font-size: 8px;
+    right: 18px;
+    bottom: 92px;
+  }
+}
+@media (max-width: 700px) {
+  :root {
+    --header-height: 82px;
+  }
+  .world-experience {
+    margin-inline: 12px;
+  }
+  .world-experience.world-enhanced {
+    height: 280svh;
+  }
+  .world-stage {
+    min-height: 630px;
+  }
+  .world-chapters {
+    top: 28px;
+    left: 22px;
+    right: 22px;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+  .world-copy h1 {
+    font-size: clamp(49px, 14vw, 68px);
+    line-height: 0.95;
+    letter-spacing: -2.2px;
+  }
+  .world-copy h2 {
+    font-size: clamp(43px, 11.8vw, 57px);
+    max-width: 340px;
+  }
+  .world-chapter-note {
+    margin-bottom: 17px;
+    font-size: 9px;
+    max-width: none;
+  }
+  .world-description {
+    font-size: 10px;
+    line-height: 1.85;
+    max-width: 270px;
+    margin-top: 17px;
+  }
+  .world-actions {
+    margin-top: 19px;
+    gap: 20px;
+  }
+  .world-actions .button {
+    min-height: 43px;
+    padding: 12px 17px;
+  }
+  .world-actions .text-link {
+    font-size: 10px;
+  }
+  .world-canvas {
+    right: 0;
+    top: auto;
+    bottom: 72px;
+    width: 100%;
+    height: 45%;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .world-bottom {
+    bottom: 17px;
+    left: 18px;
+    right: 18px;
+    padding-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 9px 15px;
+  }
+  .world-route {
+    grid-column: 1/-1;
+    grid-row: 1;
+    justify-content: center;
+    gap: 4px;
+  }
+  .world-route button {
+    padding: 8px 11px;
+    min-height: 32px;
+    font-size: 9px;
+  }
+  .world-scroll-hint {
+    grid-row: 2;
+    font-size: 8px;
+    gap: 7px;
+  }
+  .world-scroll-mark {
+    width: 13px;
+    height: 20px;
+  }
+  .world-scroll-mark::before {
+    width: 1px;
+    height: 5px;
+    left: 5px;
+    top: 4px;
+  }
+  .world-skip {
+    font-size: 8px;
+    grid-row: 2;
+    justify-self: end;
+  }
+  .world-illustration-note {
+    top: calc(55% - 40px);
+    bottom: auto;
+    right: 19px;
+    font-size: 8px;
+  }
+  .world-static .world-scroll-hint::after {
+    font-size: 8px;
+  }
+}
+@media (max-width: 370px) {
+  .world-chapters {
+    left: 18px;
+    right: 18px;
+    top: 25px;
+  }
+  .world-copy h1 {
+    font-size: clamp(45px, 14vw, 51px);
+  }
+  .world-copy h2 {
+    font-size: 41px;
+  }
+  .world-chapter-note {
+    font-size: 8px;
+    gap: 7px;
+  }
+  .world-description {
+    font-size: 9px;
+    max-width: 250px;
+  }
+  .world-actions {
+    gap: 15px;
+  }
+  .world-actions .button {
+    font-size: 9px;
+    padding-inline: 14px;
+  }
+  .world-actions .text-link {
+    font-size: 9px;
+  }
+  .world-route button {
+    font-size: 8px;
+    padding-inline: 9px;
+  }
+  .world-bottom {
+    left: 15px;
+    right: 15px;
+  }
+  .world-scroll-hint,
+  .world-skip {
+    font-size: 7px;
+  }
+}
+@media (max-height: 750px) and (min-width: 701px) {
+  .world-stage {
+    min-height: 480px;
+  }
+  .world-chapter-note {
+    margin-bottom: 19px;
+  }
+  .world-copy h1 {
+    font-size: clamp(50px, 5.5vw, 79px);
+  }
+  .world-copy h2 {
+    font-size: clamp(44px, 4.7vw, 56px);
+  }
+  .world-description {
+    font-size: 11px;
+    margin-top: 20px;
+  }
+  .world-actions {
+    margin-top: 23px;
+  }
+}
+@media (max-height: 750px) and (max-width: 700px) {
+  .world-stage {
+    min-height: 580px;
+  }
+  .world-copy h1 {
+    font-size: 48px;
+  }
+  .world-copy h2 {
+    font-size: 41px;
+  }
+  .world-chapter-note {
+    margin-bottom: 13px;
+  }
+  .world-description {
+    margin-top: 13px;
+  }
+  .world-actions {
+    margin-top: 15px;
+  }
+  .world-canvas {
+    height: 43%;
+    bottom: 80px;
+  }
+  .world-illustration-note {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .world-ready .world-poster {
+    transition: none;
+  }
+}
